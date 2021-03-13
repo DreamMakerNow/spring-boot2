@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MyBatisStart.dao.blogMapper">
+<!--    使用二级缓存-->
+    <cache
+            eviction="FIFO"
+            flushInterval="60000"
+            size="512"
+            readOnly="true"/>
+    <select id="getBlogByIF" resultType="Blog" parameterType="map">
+        select * from blog
+            <trim prefix="WHERE" prefixOverrides="AND | OR">
+<!--                <if test="title != null">-->
+<!--                    title=#{title}-->
+<!--                </if>-->
+<!--                <if test="author != null">-->
+<!--                    and author=#{author}-->
+<!--                </if>-->
+                <choose>
+                    <when test="title != null">title=#{title}</when>
+                </choose>
+                <choose>
+                    <when test="author != null">and author=#{author}</when>
+                </choose>
+                <choose>
+                    <when test="views != null">and views=#{views}</when>
+                </choose>
+                <choose>
+                    <when test="createTime != null">and create_time=#{createTime}</when>
+                </choose>
+<!--                <choose>-->
+<!--                    <otherwise>and views=#{views}</otherwise>-->
+<!--                </choose>-->
+             </trim>
+    </select>
+    <update id="updateBlog">
+        update blog
+        <trim prefix="SET" suffixOverrides="," suffix="where id=#{id}">
+            <if test="title != null">title=#{title},</if>
+            <if test="author != null">author=#{author},</if>
+            <if test="createTime != null">create_time=#{createTime},</if>
+            <if test="views != null">views=#{views}</if>
+        </trim>
+    </update>
+    <sql id="Foreach">
+        SELECT *
+        FROM blog
+        WHERE blog.title in
+        <foreach item="item"  collection="list1"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </sql>
+    <select id="getBlogByForeach" resultType="Blog">
+<!--             引用sql片段-->
+        <include refid="Foreach"/>
+    </select>
+    <select id="getBlogById" resultType="Blog">
+        select * from blog where id=#{id};
+    </select>
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--        namespace绑定一个对应的接口-->
+<mapper namespace="MyBatisStart.dao.UserDao">
+<!--    结果集映射-->
+    <resultMap id="resultmap" type="hello">
+<!--        column对应数据库中的字段名 property对应对象类中的属性名  二者名字不一样的需要映射-->
+<!--        <result column="id" property="id"/>-->
+<!--        <result column="name" property="name"/>-->
+        <result column="pwd" property="password"/>
+    </resultMap>
+<!--        id对应方法名 getUserList-->
+    <select id="getUserList" resultMap="resultmap">
+        select * from web.user;
+    </select>
+    <select id="getUserListId" resultType="MyBatisStart.pojo.User" parameterType="int">
+        select * from web.user where id=#{id};
+    </select>
+    <insert id="addUser">
+        insert into web.user (id, name, pwd) VALUE (#{id},#{name},#{pwd});
+    </insert>
+    <select id="deleteUser" resultType="MyBatisStart.pojo.User" parameterType="int">
+        delete from web.user where id=#{id};
+    </select>
+    <select id="updateUser" resultType="MyBatisStart.pojo.User" parameterType="MyBatisStart.pojo.User">
+        update web.user
+        set  name=#{name},pwd=#{pwd}
+        where id=#{id};
+    </select>
+    <select id="getNameUser" resultType="MyBatisStart.pojo.User" parameterType="String">
+        select * from web.user where name like #{name}"%";
+    </select>
+<!--    //模糊（万能）添加 map传递参数 使用map中的key 多个参数要使用map-->
+    <select id="addUserMap" resultType="MyBatisStart.pojo.User" parameterType="map">
+        insert into web.user (id, name, pwd)
+        values (#{uid},#{uname},#{upwd});
+    </select>
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MyBatisStart.dao.TeacherMapper">
+    <select id="getAllTeacher" resultType="Teacher" resultMap="student1">
+        select teacher.id tid,teacher.name tname,student.name sname,student.id sid from student,teacher  where teacher.id=student.tid;
+    </select>
+    <resultMap id="student1" type="Teacher">
+        <result property="id" column="tid"/>
+        <result property="name" column="tname"/>
+<!--        javaType=是指定属性类型 集合要用otype-->
+        <collection property="students" ofType="Student">
+            <result property="id" column="sid"/>
+            <result property="name" column="sname"/>
+            <result property="tid" column="tid"/>
+        </collection>
+    </resultMap>
+<!--    <select id="getAllTeacher" resultType="Teacher" resultMap="student1">-->
+<!--        select * from teacher;-->
+<!--    </select>-->
+<!--    <resultMap id="student1" type="Teacher" >-->
+<!--        <collection property="students" column="id" ofType="Student" select="getAllStudentByTid">-->
+<!--            <result property="name" column="name"/>-->
+<!--        </collection>-->
+<!--    </resultMap>-->
+<!--    <select id="getAllStudentByTid" resultType="Student">-->
+<!--        select * from student where tid=#{id};-->
+<!--    </select>-->
+</mapper>

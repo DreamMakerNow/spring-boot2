@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MyBatisStart.dao.StudentMapper">
+<!--    复杂方式查询1-->
+    <select id="getAllStudent"  resultMap="tid">
+        select * from student;
+    </select>
+    <resultMap id="tid" type="Student">
+<!--        复杂属性需要单独处理
+                    -对象 用association
+                    -集合 collection
+    -->
+<!--                                                                这里根据student的tid进行二次子查询getTeacherById           -->
+        <association property="tid" column="tid" javaType="Teacher" select="getTeacherById"/>
+<!--        <result column="teacher.id" property="tid"/>-->
+    </resultMap>
+    <select id="getTeacherById" resultType="Teacher">
+        select * from web.teacher where id=#{id};
+    </select>
+    <!--    复杂方式查询2-->
+<!--    <select id="getAllStudent" resultMap="teacher">-->
+<!--        select student.id sid,student.name sname,teacher.id tid,teacher.name tname from student,teacher where student.tid=teacher.id;-->
+<!--    </select>-->
+<!--    <resultMap id="teacher" type="Student">-->
+<!--        <result property="id" column="sid"/>-->
+<!--        <result property="name" column="sname"/>-->
+<!--        <association property="tid"  javaType="Teacher" >-->
+<!--&lt;!&ndash;            <result property="teacher.id" column="teacher.id"/>&ndash;&gt;-->
+<!--            <result property="id" column="tid"/>-->
+<!--            <result property="name" column="tname"/>-->
+<!--        </association>-->
+<!--    </resultMap>-->
+</mapper>

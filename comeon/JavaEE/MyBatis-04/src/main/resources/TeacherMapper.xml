@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MyBatisStart.dao.TeacherMapper">
+<!--    <select id="getAllTeacher" resultType="Teacher" resultMap="student">-->
+<!--        select * from teacher;-->
+<!--    </select>-->
+<!--    <resultMap id="student" type="Student">-->
+<!--        <association property="tid" column="tid" javaType="Student" select="getAllStudentByTid"/>-->
+<!--    </resultMap>-->
+<!--    <select id="getAllStudentByTid" resultType="Student">-->
+<!--        select * from student where tid=#{tid};-->
+<!--    </select>-->
+
+</mapper>

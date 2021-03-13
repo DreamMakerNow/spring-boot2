@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
+<!--   Spring配置文件与小文件的整合-->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+<!--    <bean id="stu" class="Test.Student" p:name="fan" p:id="454">-->
+<!--        <property name="score">-->
+<!--            <list>-->
+<!--                <value>45</value>-->
+<!--                <value>56</value>-->
+<!--                <value>90</value>-->
+<!--            </list>-->
+<!--        </property>-->
+<!--        <property name="subject">-->
+<!--            <list>-->
+<!--                <value>语文</value>-->
+<!--                <value>数学</value>-->
+<!--                <value>外语</value>-->
+<!--            </list>-->
+<!--        </property>-->
+<!--        <property name="xuef">-->
+<!--            <map>-->
+<!--                <entry key="C" value="4"/>-->
+<!--                <entry key="Java" value="5"/>-->
+<!--                <entry key="Python" value="3"/>-->
+<!--            </map>-->
+<!--        </property>-->
+<!--        <property name="pro">-->
+<!--            <props>-->
+<!--                <prop key="121">45</prop>-->
+<!--                <prop key="282">50</prop>-->
+<!--                <prop key="123">15</prop>-->
+<!--            </props>-->
+<!--        </property>-->
+<!--    </bean>-->
+<!--    <bean id="stu1" class="Test.Stu">-->
+<!--    </bean>-->
+<!--    <bean id="student" class="Test.Student" p:stu-ref="stu1">-->
+<!--    </bean>-->
+    <bean id="Tycoon" class="Test.MyConnectionFactory">
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="shiti.User" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+    <!--    动态代理 额外功能写在特定接口中，运行优先于核心功能-->
+    <bean id="userServiceProxy" class="Proxy.UserServiceImpl"/>
+    <bean id="orderServiceProxy" class="Proxy.OrderServiceImpl"/>
+    <bean id="arround" class="Proxy.Arround"/>
+    <aop:config>
+        <!--                          （* *（..））所有方法都做为切入点-->
+        <aop:pointcut id="pc" expression="execution(* Proxy.UserServiceImpl.*(..))"/>
+        <!--        组装：把切入点与额外功能进行融合-->
+        <aop:advisor advice-ref="arround" pointcut-ref="pc"/>
+    </aop:config>
+</beans>

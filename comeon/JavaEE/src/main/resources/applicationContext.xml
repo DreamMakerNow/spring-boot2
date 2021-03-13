@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:lang="http://www.springframework.org/schema/lang"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--    id属性 名字（唯一） 可以不配置 id()但会自己生成一个id 只使用一次的可以不设置id -->
+    <!--            Class属性 配置全限定名  Class可以重复 -->
+    <!--    name属性 别名 用于测试用法同 id-->
+    <!--    name id的区别-->
+    <!--        ->name 可以多个 id唯一-->
+    <!--        ->id必须要以字母开头 后面可以跟数字、字母、下划线、连字符（不能用特殊字符（发展到今天可以用）） name命名没有要求-->
+    <!--        ->containsBean 与containsBeanDefinition 方法上使用不同-->
+    <bean id="hello" class="Test.Test"/>
+    <bean class="Start.User"/>
+    <bean id="person" class="Start.Person" p:id="45418121">
+        <!--       不同类型数据的注入-->
+        <!--#       8种基本数据和String-->
+        <property name="name" value="范蹦"/>
+        <!-- #       数组类型-->
+        <property name="emails">
+            <list>
+                <value>1</value>
+                <value>2</value>
+                <value>3</value>
+            </list>
+        </property>
+        <!-- #       set数据类型-->
+        <property name="tels">
+            <set>
+                <!--                这里直接使用value是因为使用了<String>泛型，String数据类型用value-->
+                <value>166</value>
+                <value>183</value>
+                <value>182</value>
+            </set>
+        </property>
+        <!--#        list集合-->
+        <property name="addresses">
+            <list>
+                <value>bj</value>
+                <value>sh</value>
+                <value>fz</value>
+            </list>
+        </property>
+        <!-- #       Properties类型-->
+        <property name="p">
+            <props>
+                <!--                Properties数据只能是String类型 所以省略了value-->
+                <prop key="key1">12345</prop>
+                <prop key="key2">67891</prop>
+            </props>
+        </property>
+        <!-- #       map类型-->
+        <property name="qqs">
+            <map>
+                <entry key="qq" value="197274"/>
+                <entry>
+                    <key><value>qq1</value></key>
+                    <value>190050</value>
+                </entry>
+            </map>
+        </property>
+    </bean>
+    <!-- #       自定义类类型-->
+    <!--    方式一-->
+    <!--    <bean id="userService" class="Start.UserServiceImpl">-->
+    <!--        <property name="userDAO">-->
+    <!--            <bean class="Start.UserDAOImpl"/>-->
+    <!--        </property>-->
+    <!--    </bean>-->
+    <!--    方式二 比第一种好-->
+    <bean id="userDAO" class="Start.UserDAOImpl"/>
+    <bean id="userService" class="Start.UserServiceImpl" p:userDAO-ref="userDAO">
+        <!--        引用上面的userDAO-->
+        <!--        <property name="userDAO" ref="userDAO"/>-->
+    </bean>
+    <!--    复杂对象创建方式一 实现FactoryBean接口-->
+    <bean id="conn1" class="beanFactory.ConnectionFactoryBean">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/web?useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123456"/>
+    </bean>
+    <!--    复杂对象创建方式二 实例工厂-->
+    <bean id="connFactory" class="beanFactory.ConnectionFactory"/>
+    <bean id="conn" factory-bean="connFactory" factory-method="getConnection">
+        <!--                <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>-->
+        <!--                <property name="url" value="jdbc:mysql://localhost:3306/web?useSSL=false&amp;serverTimezone=UTC"/>-->
+        <!--                <property name="username" value="root"/>-->
+        <!--                <property name="password" value="123456"/>-->
+    </bean>
+    <!--    复杂对象创建方式三 实例工厂-->
+    <bean id="staticFactory" class="beanFactory.StaticConnectionFactory" factory-method="getConnection"/>
+    <bean id="account"  scope="singleton" class="Scope.Account" lazy-init="true" init-method="myInit" destroy-method="myDestroy" p:name="setName"/>
+
+    <!--    自定义类型转换器(其实内部提供了默认日期格式 2021/2/14)-->
+    <!--    org.springframework.context.support.ConversionServiceFactoryBean 用于注册类型转换器(下面的这个id名字好像不能用别的)-->
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean" p:converters-ref="myDate"/>
+    <!--        <property name="converters">-->
+    <!--            <set>-->
+    <!--                <ref bean="myDate"/>-->
+    <!--            </set>-->
+    <!--        </property>-->
+    <!--    </bean>-->
+    <bean id="myDate" class="converter.MyDateConverter" p:pattern="yyyy-MM-dd"/>
+    <bean id="date" class="converter.Person" p:name="fan" p:birthday="2020-2-14"/>
+    <bean id="mate" class="PostProcessor.Categroy" p:name="xiaojr" p:age="12"/>
+    <bean id="myBeanPostProcesso" class="PostProcessor.MyPose"/>
+
+    <bean id="orderServiceProxy" class="Proxy.OrderServiceImpl"/>
+    <bean id="arround" class="Proxy.Arround"/>
+    <aop:config>
+        <!--                          （* *（..））所有方法都做为切入点-->
+        <aop:pointcut id="pc" expression="execution(* Proxy.OrderServiceImpl.*(..))"/>
+        <!--        组装：把切入点与额外功能进行融合-->
+        <aop:advisor advice-ref="arround" pointcut-ref="pc"/>
+    </aop:config>
+
+</beans>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--        namespace绑定一个对应的接口-->
+<mapper namespace="One.userdaomapper">
+    <insert id="addUser">
+        insert into web.shiti.User (web.shiti.User.id, web.shiti.User.name, web.shiti.User.pwd) value (#{id},#{name},#{pwd});
+    </insert>
+</mapper>

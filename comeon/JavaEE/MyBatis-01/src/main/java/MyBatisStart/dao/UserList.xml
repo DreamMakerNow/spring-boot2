@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--        namespace绑定一个对应的接口-->
+<mapper namespace="MyBatisStart.dao.UserDao">
+<!--        id对应方法名 getUserList         MyBatisStart.pojo.User 使用“hello”这个注解-->
+    <select id="getUserList" resultType="hello">
+        select * from user;
+    </select>
+    <select id="getUserListId" resultType="MyBatisStart.pojo.User" parameterType="int">
+        select * from web.user where id=#{id};
+    </select>
+    <insert id="addUser">
+        insert into web.user (id, name, pwd) VALUE (#{id},#{name},#{pwd});
+    </insert>
+    <delete id="deleteUser" parameterType="int">
+        delete from web.user where id=#{id};
+    </delete>
+    <update id="updateUser" parameterType="MyBatisStart.pojo.User">
+        update web.user
+        set  name=#{name},pwd=#{pwd}
+        where id=#{id};
+    </update>
+    <select id="getNameUser" resultType="MyBatisStart.pojo.User" parameterType="String">
+        select * from web.user where name like '%${name}%';
+    </select>
+<!--    //模糊（万能）添加 map传递参数 使用map中的key 多个参数要使用map-->
+    <insert id="addUserMap" parameterType="map">
+        insert into web.user (id, name, pwd)
+        values (#{uid},#{uname},#{pwd});
+    </insert>
+</mapper>
